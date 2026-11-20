@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A'aMalFinder — Daily Routine, Salat & Academic Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <p class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
+    <h1>A'aMalFinder</h1>
+    <p class="subtitle" id="header-greeting">Your daily Ibadat, study, and routine companion</p>
+  </header>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="today">Today</button>
+    <button class="tab-btn" data-tab="plan">Plan & Routine</button>
+    <button class="tab-btn" data-tab="academic">Academic</button>
+    <button class="tab-btn" data-tab="events">Events</button>
+    <button class="tab-btn" data-tab="settings">⚙ Settings</button>
+  </nav>
+
+  <main class="container">
+    <!-- INITIAL SETUP MODAL -->
+    <section id="setup-modal" class="card hidden">
+      <h2>Assalamu Alaikum! Set up A'aMalFinder</h2>
+      <p class="muted">Fill this out once. You can change everything anytime in Settings.</p>
+      <form id="setup-form" class="grid-form">
+        <input type="text" id="setup-name" placeholder="Your Name" required />
+        <input type="text" id="setup-city" placeholder="City" required />
+        <input type="text" id="setup-dept" placeholder="Department / Program" />
+        <input type="text" id="setup-uni" placeholder="University / Institution" />
+        
+        <h3>5 Daily Salat Times (According to your local Masjid)</h3>
+        <div class="prayer-inputs">
+          <label>Fajr <input type="time" id="setup-fajr" value="05:50" required /></label>
+          <label>Dhuhr <input type="time" id="setup-dhuhr" value="13:10" required /></label>
+          <label>Asr <input type="time" id="setup-asr" value="16:20" required /></label>
+          <label>Maghrib <input type="time" id="setup-maghrib" value="19:10" required /></label>
+          <label>Isha <input type="time" id="setup-isha" value="20:20" required /></label>
+        </div>
+
+        <h3>Starter Routines</h3>
+        <div class="checkbox-group">
+          <label><input type="checkbox" id="preset-quran" checked /> Quran Tilawat (After Fajr)</label>
+          <label><input type="checkbox" id="preset-study" checked /> Night Study (8:00 PM – 10:00 PM)</label>
+          <label><input type="checkbox" id="preset-sleep" checked /> Sleep (11:00 PM)</label>
+        </div>
+
+        <button type="submit" class="btn primary">Get Started</button>
+      </form>
+    </section>
+
+    <!-- TAB: TODAY -->
+    <section id="tab-today" class="tab-content active">
+      <div class="date-bar">
+        <button id="prev-day" class="btn icon-btn" aria-label="Previous Day">‹</button>
+        <h2 id="current-date-display">Today</h2>
+        <button id="next-day" class="btn icon-btn" aria-label="Next Day">›</button>
+      </div>
+
+      <!-- Progress Dashboard -->
+      <div class="card stats-card">
+        <div class="progress-header">
+          <span class="big-percent" id="total-percent">0%</span>
+          <span>completed today</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="total-progress-bar" style="width: 0%;"></div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-box"><span>5 Salat</span><strong id="stat-prayers">0/5</strong></div>
+          <div class="stat-box"><span>Routine</span><strong id="stat-routine">0/0</strong></div>
+          <div class="stat-box"><span>To-Do</span><strong id="stat-todo">0/0</strong></div>
+          <div class="stat-box"><span>Streak (60%+)</span><strong id="stat-streak">0 d</strong></div>
+        </div>
+      </div>
+
+      <!-- 5 Daily Prayers -->
+      <div class="card">
+        <h3>🕌 5 Daily Salat</h3>
+        <div id="prayer-list" class="checklist"></div>
+      </div>
+
+      <!-- Today's Routine -->
+      <div class="card">
+        <div class="card-header-flex">
+          <h3>📅 Today's Routine</h3>
+          <button class="btn small" id="go-to-plan-btn">+ Add Routine</button>
+        </div>
+        <div id="today-routine-list" class="checklist"></div>
+      </div>
+
+      <!-- Daily To-Do List -->
+      <div class="card">
+        <h3>✅ To-Do List</h3>
+        <form id="quick-todo-form" class="inline-form">
+          <input type="text" id="quick-todo-input" placeholder="Add a quick task..." required />
+          <select id="quick-todo-priority">
+            <option value="normal">Normal Priority</option>
+            <option value="high">High Priority</option>
+          </select>
+          <button type="submit" class="btn primary">Add</button>
+        </form>
+        <div id="today-todo-list" class="checklist"></div>
+      </div>
+    </section>
+
+    <!-- TAB: PLAN & ROUTINE -->
+    <section id="tab-plan" class="tab-content">
+      <div class="card">
+        <h2>Add New Routine Task</h2>
+        <form id="routine-form" class="grid-form">
+          <input type="text" id="routine-title" placeholder="Activity Name (e.g., Math Lecture, Gym...)" required />
+          <select id="routine-category">
+            <option value="ibadat">Ibadat (Worship)</option>
+            <option value="class">Class / Lecture</option>
+            <option value="study">Study / Revision</option>
+            <option value="life">Daily Life</option>
+          </select>
+          <div class="time-row">
+            <label>Start Time <input type="time" id="routine-start" required /></label>
+            <label>End Time <input type="time" id="routine-end" /></label>
+          </div>
+          <input type="text" id="routine-location" placeholder="Room / Location (optional)" />
+          
+          <label>Repeat on Days:</label>
+          <div class="days-selector" id="routine-days">
+            <label><input type="checkbox" value="0" /> Sun</label>
+            <label><input type="checkbox" value="1" checked /> Mon</label>
+            <label><input type="checkbox" value="2" checked /> Tue</label>
+            <label><input type="checkbox" value="3" checked /> Wed</label>
+            <label><input type="checkbox" value="4" checked /> Thu</label>
+            <label><input type="checkbox" value="5" checked /> Fri</label>
+            <label><input type="checkbox" value="6" /> Sat</label>
+          </div>
+          <button type="submit" class="btn primary">Save Routine</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>All Scheduled Routines</h3>
+        <div class="filter-bar">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="ibadat">Ibadat</button>
+          <button class="filter-btn" data-filter="class">Class</button>
+          <button class="filter-btn" data-filter="study">Study</button>
+          <button class="filter-btn" data-filter="life">Daily Life</button>
+        </div>
+        <div id="all-routines-list" class="item-list"></div>
+      </div>
+    </section>
+
+    <!-- TAB: ACADEMIC -->
+    <section id="tab-academic" class="tab-content">
+      <div class="stats-grid card">
+        <div class="stat-box"><span>Upcoming Exams</span><strong id="acad-exam-count">0</strong></div>
+        <div class="stat-box"><span>Pending Assignments</span><strong id="acad-assign-count">0</strong></div>
+        <div class="stat-box"><span>Nearest Deadline</span><strong id="acad-next-deadline">—</strong></div>
+      </div>
+
+      <div class="card">
+        <h2>Add Exam or Assignment</h2>
+        <form id="academic-form" class="grid-form">
+          <select id="acad-type">
+            <option value="exam">📝 Exam</option>
+            <option value="assignment">📄 Assignment</option>
+          </select>
+          <input type="text" id="acad-course" placeholder="Course Name / Code" required />
+          <input type="text" id="acad-title" placeholder="Topic / Title" required />
+          <div class="time-row">
+            <label>Date <input type="date" id="acad-date" required /></label>
+            <label>Time <input type="time" id="acad-time" /></label>
+          </div>
+          <input type="text" id="acad-room" placeholder="Room / Location (optional)" />
+          <button type="submit" class="btn primary">Add Item</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Upcoming & Pending</h3>
+        <div id="academic-upcoming-list" class="item-list"></div>
+      </div>
+    </section>
+
+    <!-- TAB: EVENTS -->
+    <section id="tab-events" class="tab-content">
+      <div class="card">
+        <h2>Add New Event</h2>
+        <form id="event-form" class="grid-form">
+          <input type="text" id="event-title" placeholder="Event Name" required />
+          <div class="time-row">
+            <label>Date <input type="date" id="event-date" required /></label>
+            <label>Time <input type="time" id="event-time" /></label>
+          </div>
+          <input type="text" id="event-location" placeholder="Location (optional)" />
+          <button type="submit" class="btn primary">Add Event</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Upcoming Events</h3>
+        <div id="events-list" class="item-list"></div>
+      </div>
+    </section>
+
+    <!-- TAB: SETTINGS & BACKUP -->
+    <section id="tab-settings" class="tab-content">
+      <div class="card">
+        <h2>Profile & Salat Settings</h2>
+        <form id="settings-form" class="grid-form">
+          <input type="text" id="set-name" placeholder="Your Name" />
+          <input type="text" id="set-city" placeholder="City" />
+          <input type="text" id="set-dept" placeholder="Department" />
+          <input type="text" id="set-uni" placeholder="University" />
+          
+          <h3>Salat Schedule</h3>
+          <div class="prayer-inputs">
+            <label>Fajr <input type="time" id="set-fajr" /></label>
+            <label>Dhuhr <input type="time" id="set-dhuhr" /></label>
+            <label>Asr <input type="time" id="set-asr" /></label>
+            <label>Maghrib <input type="time" id="set-maghrib" /></label>
+            <label>Isha <input type="time" id="set-isha" /></label>
+          </div>
+          <button type="submit" class="btn primary">Save Settings</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Backup & Calendar Export</h2>
+        <p class="muted">Your data is saved automatically in your browser. Download a JSON backup regularly or export your routine to your calendar app.</p>
+        <div class="button-row">
+          <button id="export-json-btn" class="btn">📥 Download Backup (.json)</button>
+          <label class="btn file-label">
+            📤 Restore Backup (.json)
+            <input type="file" id="import-json-input" accept=".json" hidden />
+          </label>
+          <button id="export-ics-btn" class="btn primary">📅 Download Calendar (.ics)</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p class="verse">رَبِّ زِدْنِي عِلْمًا</p>
+    <p>“My Lord, increase me in knowledge.” — Surah Ta-Ha 20:114</p>
+    <p class="brand-tag">A'aMalFinder</p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
