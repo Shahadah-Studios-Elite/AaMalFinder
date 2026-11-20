@@ -1,0 +1,12 @@
+{
+  "name": "aamalfinder",
+  "version": "1.0.0",
+  "description": "A'aMalFinder - Daily Routine, Salat, Academic & Productivity Tracker",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
